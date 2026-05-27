@@ -49,14 +49,9 @@ const transporter = nodemailer.createTransport({
 // ─── Fetch Latest AI News ────────────────────
 async function fetchAINews() {
   try {
-    const now = new Date();
-    const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000);
-
     const response = await axios.get(CONFIG.newsApi.baseUrl, {
       params: {
         q: CONFIG.newsApi.query,
-        from: twoHoursAgo.toISOString(),
-        to: now.toISOString(),
         sortBy: CONFIG.newsApi.sortBy,
         language: CONFIG.newsApi.language,
         pageSize: CONFIG.newsApi.pageSize,
@@ -68,21 +63,7 @@ async function fetchAINews() {
       return response.data.articles;
     }
 
-    // Fallback: last 24 hours
-    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const fallback = await axios.get(CONFIG.newsApi.baseUrl, {
-      params: {
-        q: CONFIG.newsApi.query,
-        from: oneDayAgo.toISOString(),
-        to: now.toISOString(),
-        sortBy: CONFIG.newsApi.sortBy,
-        language: CONFIG.newsApi.language,
-        pageSize: CONFIG.newsApi.pageSize,
-        apiKey: CONFIG.newsApi.key,
-      },
-    });
-
-    return fallback.data.articles || [];
+    return [];
   } catch (error) {
     log(`❌ News API Error: ${error.response?.data?.message || error.message}`);
     return [];
