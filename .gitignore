@@ -1,3 +1,5 @@
 node_modules/
 .env
 bot.log
+telegram-bot.log
+data/
